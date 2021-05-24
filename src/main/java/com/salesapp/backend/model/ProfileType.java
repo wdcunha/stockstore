@@ -1,4 +1,4 @@
-package com.salesapp.backend;
+package com.salesapp.backend.model;
 
 public enum ProfileType {
 

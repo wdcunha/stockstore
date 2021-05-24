@@ -12,9 +12,33 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.java>1.8</version.java>
+        <version.javaee>7.0</version.javaee>
+        <!-- Plugins -->
+        <version.assembly.plugin>3.1.1</version.assembly.plugin>
+        <version.compiler.plugin>3.8.0</version.compiler.plugin>
+        <version.dependency.plugin>3.1.1</version.dependency.plugin>
+        <version.war.plugin>3.2.2</version.war.plugin>
+        <!-- Tests -->
         <spring-data.version>2.1.9.RELEASE</spring-data.version>
+        <version.junit>4.12</version.junit>
+        <version.arquillian>1.1.13.5</version.arquillian>
+        <version.arquillian.fish>1.1.13.5</version.arquillian.fish>
+        <version.shrinkwrap>1.2.6</version.shrinkwrap>
     </properties>
-    
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.arquillian</groupId>
+                <artifactId>arquillian-universe</artifactId>
+                <version>${version.arquillian}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
@@ -22,6 +46,35 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.universe</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss.shrinkwrap/shrinkwrap-api -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <version>${version.shrinkwrap}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.wildfly.arquillian/wildfly-arquillian-container-remote -->
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-remote</artifactId>
+            <version>2.1.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -62,14 +115,16 @@
     </dependencies>
 
     <build>
+        <finalName>productstore-back</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>${version.compiler.plugin}</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
@@ -78,7 +133,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>${version.war.plugin}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
@@ -86,7 +141,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
+                <version>${version.dependency.plugin}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -100,7 +155,7 @@
                                 <artifactItem>
                                     <groupId>javax</groupId>
                                     <artifactId>javaee-endorsed-api</artifactId>
-                                    <version>7.0</version>
+                                    <version>${version.javaee}</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
@@ -109,22 +164,13 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>fish.payara.maven.plugins</groupId>
-                <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.0.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>bundle</goal>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${version.assembly.plugin}</version>
                 <configuration>
-                    <payaraVersion>5.184</payaraVersion>
-                    <useUberJar>true</useUberJar>
-                    <deployWar>false</deployWar>
-                    <daemon>false</daemon>
+                    <descriptorRefs>
+                        <descriptorRef>src</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
         </plugins>

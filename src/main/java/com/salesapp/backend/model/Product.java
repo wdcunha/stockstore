@@ -1,4 +1,4 @@
-package com.salesapp.backend;
+package com.salesapp.backend.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -15,15 +19,21 @@ public class Product {
     @GeneratedValue
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 200)
     @Column(length = 200)
     private String title;
 
-    @Column(length = 1000)
+    @Size(min = 1, max = 10000)
+    @Column(length = 10000)
     private String description;
 
+    @NotNull
+    @Min(1)
     @Column(name = "unit_cost")
     private Float unitCost;
 
+    @Past
     @Column(name = "purchase_date")
     @Temporal(TemporalType.DATE)
     private Date purchaseDate;
@@ -35,6 +45,30 @@ public class Product {
 
     @Column(name = "profile_type")
     private ProfileType profileType;
+
+    // ======================================
+    // =            Constructors            =
+    // ======================================
+
+    public Product(){
+    }
+
+    public Product(String title, String description, Float unitCost, Date purchaseDate, Integer quantity,
+                   String imageUrl, ProfileType profileType) {
+        this.title = title;
+        this.description = description;
+        this.unitCost = unitCost;
+        this.purchaseDate = purchaseDate;
+        this.quantity = quantity;
+        this.imageUrl = imageUrl;
+        this.profileType = profileType;
+    }
+
+
+    // ======================================
+    // =        Getters and Setters         =
+    // ======================================
+
 
     public Long getId() {
         return id;
